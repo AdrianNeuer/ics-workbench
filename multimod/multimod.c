@@ -38,6 +38,9 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
       if (sum + present < sum) {
         sum = mod (sum + present, m) + mod(mod(-1ULL, m) + mod(1, m), m);
       }
+      else {
+        sum = sum + present;
+      }
       sum  = mod(sum, m);
     }
     if ((present << 1) < present) {
