@@ -44,13 +44,13 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
   uint64_t sum = 0;
   
   while(a) {
-    if (a & 1 == 1) {
+    if ((a & 1) == 1) {
       if (sum + present < sum) {
         sum = mod (sum + present, m) + mod(mod(-1ULL, m) + mod(1, m), m);
       }
       sum  = mod(sum, m);
     }
-    if (present << 1 < present) {
+    if ((present << 1) < present) {
       present = mod(present << 1, m) + mod(mod(-1ULL, m) + mod(1, m), m);
     }
     else {
