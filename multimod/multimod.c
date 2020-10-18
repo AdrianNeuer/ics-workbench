@@ -12,24 +12,23 @@ uint64_t mod(uint64_t x, uint64_t m) {
   else if(x - m < m){
     return x - m;
   }
-  else if (x - m >= m){
+  else if (x - m == m){
+    return 0;
+  }
+  else
+  {
     uint64_t t = m;
     for (int i = 1; i <= 64; i++){
       t = t << 1;
       if (x == t){
         return 0;
       }
-      else if (x < t){
+      if (x < t << 1) {
         break;
-      } 
-      else {
-        continue;
       }
     }
-    t = t >> 1;
     return mod(x - t, m);
   }
-  return 0;
 }
 
 void breakdown (uint64_t a) {
@@ -47,12 +46,12 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
   for (int i = 0; i <= 63; i++) {
     if (A[i] == 1) {
       if (sum + present < sum) {
-        sum = mod (sum + present, m) + mod(-1ULL, m) + mod(1, m);
+        sum = mod (sum + present, m) + mod(mod(-1ULL, m) + mod(1, m), m);
       }
       sum  = mod(sum, m);
     }
     if (present << 1 < present) {
-      present = mod(present << 1, m) + mod(-1ULL, m) + mod(1, m);
+      present = mod(present << 1, m) + mod(mod(-1ULL, m) + mod(1, m), m);
     }
     else {
       present <<= 1;
