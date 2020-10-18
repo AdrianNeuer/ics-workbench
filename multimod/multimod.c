@@ -29,6 +29,7 @@ uint64_t mod(uint64_t x, uint64_t m) {
     t = t >> 1;
     return mod(x - t, m);
   }
+  return 0;
 }
 
 void breakdown (uint64_t a) {
