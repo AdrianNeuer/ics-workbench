@@ -43,8 +43,8 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
   uint64_t present = mod(b,m);
   uint64_t sum = 0;
   
-  for (int i = 0; i <= 63; i++) {
-    if (A[i] == 1) {
+  while(a) {
+    if (a & 1 == 1) {
       if (sum + present < sum) {
         sum = mod (sum + present, m) + mod(mod(-1ULL, m) + mod(1, m), m);
       }
@@ -56,6 +56,7 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
     else {
       present <<= 1;
     }
+    a >>= 1;
   }
 
   return mod(sum, m);
