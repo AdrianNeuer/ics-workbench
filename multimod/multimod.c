@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-int32_t A[64];
+uint32_t A[64];
 
 uint64_t mod(uint64_t x, uint64_t m) {
   if (x < m){
