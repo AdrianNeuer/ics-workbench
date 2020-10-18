@@ -1,7 +1,5 @@
 #include <stdint.h>
 
-uint32_t A[64];
-
 uint64_t mod(uint64_t x, uint64_t m) {
   if (x < m){
     return x;
@@ -31,15 +29,7 @@ uint64_t mod(uint64_t x, uint64_t m) {
   }
 }
 
-void breakdown (uint64_t a) {
-  for (int i = 0; i <= 63; i++) {
-    A[i] = a & 1;
-    a >>= 1;
-  }
-}
-
 uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
-  breakdown(a);
   uint64_t present = mod(b,m);
   uint64_t sum = 0;
   
