@@ -50,7 +50,13 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
       sum  = mod(sum, m);
     }
     if ((present << 1) < present) {
-      present = mod(present << 1, m) + mod(mod(-1ULL, m) + mod(1, m), m);
+      uint64_t one = mod(present << 1, m);
+      uint64_t two = mod(mod(-1ULL, m) + mod(1, m), m);
+      while(one + two < one){
+      one = mod(one + two, m);
+      two = mod(mod(-1ULL, m) + mod(1, m), m);
+      }
+      present  = one +  two;
     }
     else {
       present <<= 1;
