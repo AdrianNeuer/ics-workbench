@@ -17,11 +17,16 @@ uint64_t mod(uint64_t x, uint64_t m) {
   {
     uint64_t t = m;
     for (int i = 1; i <= 64; i++){
-      t = t << 1;
-      if (x == t){
-        return 0;
+      if ((t << 1) > t){
+        t = t << 1;
+        if (x == t){
+          return 0;
+        }
+        if (x < t << 1) {
+          break;
+        }
       }
-      if (x < t << 1) {
+      else {
         break;
       }
     }
