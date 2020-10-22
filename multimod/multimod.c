@@ -36,7 +36,13 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
   while(a) {
     if ((a & 1) == 1) {
       if (sum + present < sum) {
-        sum = mod (sum + present, m) + mod(mod(-1ULL, m) + mod(1, m), m);
+        uint64_t fir = mod (sum + present, m);
+        uint64_t sec = mod(mod(-1ULL, m) + mod(1, m), m);
+        while(fir + sec < fir){
+          fir = mod(fir + sec, m);
+          sec = mod(mod(-1ULL, m) + mod(1, m), m);
+        }
+        sum = fir + sec;
       }
       else {
         sum = sum + present;
