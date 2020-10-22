@@ -56,7 +56,7 @@ uint64_t multimod(uint64_t a, uint64_t b, uint64_t m) {
       one = mod(one + two, m);
       two = mod(mod(-1ULL, m) + mod(1, m), m);
       }
-      present  = one +  two;
+      present  = one + two;
     }
     else {
       present <<= 1;
