@@ -25,7 +25,7 @@ int asm_popcnt(uint64_t x) {
     "add $0x1, %edx\n"
     "cmp 0x40, %edx\n"
     "jne loop\n"
-    : "r" (s)
+    : "=r" (s)
     : "r" (x)
   );
   return s;
