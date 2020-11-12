@@ -21,7 +21,7 @@ int asm_popcnt(uint64_t x) {
     "loop: mov %1, %%rax\n"
     "shr %%dl, %%rax\n"
     "and $0x1, %%rax\n"
-    "add %%rax, %0\n"
+    "add %%eax, %0\n"
     "add $0x1, %%edx\n"
     "cmp 0x40, %%edx\n"
     "jne loop\n"
