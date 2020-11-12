@@ -17,13 +17,13 @@ int asm_popcnt(uint64_t x) {
   //  if ((x >> i) & 1) s++;
   //}
   asm(
-    "mov $0x0, %%edx\n"
+    "mov $0x0, %%ecx\n"
     "loop: mov %1, %%rax\n"
-    "shr %%rdx, %%rax\n"
+    "shr %%cl, %%rax\n"
     "and $0x1, %%rax\n"
     "add %%eax, %0\n"
-    "add $0x1, %%edx\n"
-    "cmp 0x40, %%edx\n"
+    "add $0x1, %%ecx\n"
+    "cmp 0x40, %%ecx\n"
     "jne loop\n"
     : "=r" (s)
     : "r" (x)
