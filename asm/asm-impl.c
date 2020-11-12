@@ -4,7 +4,7 @@
 int64_t asm_add(int64_t a, int64_t b) {
   int64_t z;
   asm(
-    "lea, (%1, %2, 1) %0"
+    "lea (%1, %2, 1), %0"
     : "=r" (z)
     : "r" (a), "r" (b)
   );
