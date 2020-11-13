@@ -13,15 +13,15 @@ int64_t asm_add(int64_t a, int64_t b) {
 
 int asm_popcnt(uint64_t x) {
   int s = 0;
-  for (int i = 0; i < 64; i++) {
+  /*for (int i = 0; i < 64; i++) {
     if ((x >> i) & 1) s++;
-  }
-  /*
+  }*/
+  
   asm(
     "mov $0x0, %%ecx\n"
     "loop: mov %1, %%rdx\n"
-    "shr %%cl, %%rdx\n"
-    "and $0x1, %%rdx\n"
+    "shr %%cl, %%edx\n"
+    "and $0x1, %%edx\n"
     "add %%edx, %0\n"
     "add $0x1, %%ecx\n"
     "cmp $0x40, %%ecx\n"
@@ -30,7 +30,7 @@ int asm_popcnt(uint64_t x) {
     : "r" (x)
     : "cc"
   );
-  */
+  
   return s;
 }
 
