@@ -23,7 +23,7 @@ int asm_popcnt(uint64_t x) {
     "and $0x1, %%rdx\n"
     "add %%edx, %0\n"
     "add $0x1, %%ecx\n"
-    "cmp 0x40, %%ecx\n"
+    "cmp $0x40, %%ecx\n"
     "jne loop\n"
     : "=a" (s)
     : "r" (x)
