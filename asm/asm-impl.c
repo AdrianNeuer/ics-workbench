@@ -30,7 +30,7 @@ int asm_popcnt(uint64_t x) {
     "mov %%ebx, %0\n"
     : "=r" (s)
     : "r" (x)
-    : "cc"
+    : "cc", "%ecx", "%rbx", "%rdx" 
   );
   
   return s;
