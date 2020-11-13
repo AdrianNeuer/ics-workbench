@@ -19,7 +19,7 @@ int asm_popcnt(uint64_t x) {
   
   asm(
     "mov $0x0, %%ecx\n"
-    "mov $0x0, %%ebx"
+    "mov $0x0, %%ebx\n"
     "loop: mov %1, %%rdx\n"
     "shr %%cl, %%edx\n"
     "and $0x1, %%edx\n"
@@ -27,7 +27,7 @@ int asm_popcnt(uint64_t x) {
     "add $0x1, %%ecx\n"
     "cmp $0x40, %%ecx\n"
     "jne loop\n"
-    "mov %ebx, %0"
+    "mov %ebx, %0\n"
     : "=r" (s)
     : "r" (x)
     : "cc"
