@@ -18,7 +18,6 @@ int asm_popcnt(uint64_t x) {
   //}
   asm(
     "mov $0x0, %%ecx\n"
-    "mov %0, %%eax\n"
     "loop: mov %1, %%rdx\n"
     "shr %%cl, %%rdx\n"
     "and $0x1, %%rdx\n"
