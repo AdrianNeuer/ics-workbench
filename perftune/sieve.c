@@ -9,7 +9,7 @@ static bool is_prime[N];
 static int  primes[N];
 
 int *sieve(int n) {
-  for (int i = 0; i <= n; i++)
+  for (int i = 3; i <= n; i += 2)
     is_prime[i] = true;
 
   for (int i = 3; i <= n; i+=2) {
