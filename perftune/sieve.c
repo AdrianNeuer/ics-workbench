@@ -12,12 +12,19 @@ int *sieve(int n) {
   assert(n + 1 < N);
   for (int i = 0; i <= n; i++)
     is_prime[i] = true;
-
-  for (int i = 2; i <= n; i++) {
+  int i = 2
+  while (i <= n) {
     if(is_prime[i]){
       for (int j = i + i; j <= n; j += i) {
         is_prime[j] = false;
       }
+    }
+    if (i==2){
+      i++;
+    }
+    else
+    {
+      i += 2; 
     }
   }
 
