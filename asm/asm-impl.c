@@ -13,10 +13,6 @@ int64_t asm_add(int64_t a, int64_t b) {
 
 int asm_popcnt(uint64_t x) {
   int s = 0;
-  /*for (int i = 0; i < 64; i++) {
-    if ((x >> i) & 1) s++;
-  }*/
-  
   asm(
     "mov $0x0, %%ecx\n"
     "mov $0x0, %%rbx\n"
@@ -37,7 +33,20 @@ int asm_popcnt(uint64_t x) {
 }
 
 void *asm_memcpy(void *dest, const void *src, size_t n) {
-  return memcpy(dest, src, n);
+
+  asm(
+    "push %2"
+    "shr %2, 2"
+    "rep: movsl"
+    "pop %2"
+    "and %2, $2"
+    "rep:movsb"
+    :"D" (dest)
+    :"S" (src), "c" (n)
+    :"cc"
+  );
+
+  return dest;
 }
 
 int asm_setjmp(asm_jmp_buf env) {
