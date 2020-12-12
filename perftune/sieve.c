@@ -13,7 +13,11 @@ int st (int n){
     if (i*i > n){
       return i -1;
     }
+    else{
+      continue;
+    }
   }
+  return 0;
 }
 
 int *sieve(int n) {
