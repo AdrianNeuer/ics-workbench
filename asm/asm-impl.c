@@ -39,7 +39,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
     "shr %2, 2\n"
     "rep;movsl\n"
     "pop %2\n"
-    "and %2, $2\n"
+    "and %2, $3\n"
     "rep;movsb\n"
     :"=D" (dest)
     :"S" (src), "c" (n)
