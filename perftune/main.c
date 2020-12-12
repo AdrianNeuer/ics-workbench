@@ -5,7 +5,7 @@
 int *sieve(int n);
 
 int main() {
-  int *primes = sieve(35);
+  int *primes = sieve(15);
   printf("%f s\n", (double)clock()/CLOCKS_PER_SEC);
   for (int *cur = primes, i = 0; *cur; cur++, i++) {
     printf("%8d", *cur);
