@@ -46,7 +46,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
     "end:"
     :"=D" (dest)
     :"S" (src), "c" (n), "m" (n)
-    :"cc"
+    :"cc", "eax"
   );
 
   return dest;
