@@ -37,10 +37,10 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   asm(
     "lloop: movzb (%%rsi), %%eax\n"
     "movl %%eax, (%%rdi)\n"
-    "add $1, %%rsi\n"
-    "add $1, %%rdi\n"
-    "sub $1, %%rcx\n"
-    "cmp $0, %%rcx\n"
+    "add $0x1, %%rsi\n"
+    "add $0x1, %%rdi\n"
+    "sub $0x1, %%rcx\n"
+    "cmp $0x0, %%rcx\n"
     "jne lloop\n"
     :"=D" (dest)
     :"S" (src), "c" (n), "m" (n)
@@ -54,7 +54,7 @@ int asm_setjmp(asm_jmp_buf env) {
   asm volatile(
     "push %%rbp\n"
     "mov %%rsp, %%rbp\n"
-    "mov %%rdi, %%rax\n"//rdi = env
+    "mov %0, %%rax\n"//rdi = env
     "mov %%rbx, (%%rax)\n"
     "mov %%rcx, 8(%%rax)\n"
     "mov %%rdx, 16(%%rax)\n"
