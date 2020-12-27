@@ -69,7 +69,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "pop %%rbp\n"
     "ret\n"
     :
-    : "D" env
+    : "D" (env)
     : "rax"
   );
   return 0;
