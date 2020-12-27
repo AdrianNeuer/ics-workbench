@@ -40,9 +40,9 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
     "movzb %%rsi, %%eax\n"
     "mov %%eax, %%rdi\n"
     "add $1, %%rsi\n"
-    "add $1, %%rdi"
-    "sub $1, %%rcx"
-    "jmp lloop"
+    "add $1, %%rdi\n"
+    "sub $1, %%rcx\n"
+    "jmp lloop\n"
     "end:"
     :"=D" (dest)
     :"S" (src), "c" (n), "m" (n)
