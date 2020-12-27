@@ -35,7 +35,7 @@ int asm_popcnt(uint64_t x) {
 void *asm_memcpy(void *dest, const void *src, size_t n) {
 
   asm(
-    "sub $1, %2"
+    "sub $1, %2\n"
     "rep;movsb\n"
     :"=D" (dest)
     :"S" (src), "c" (n), "m" (n)
