@@ -51,26 +51,6 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  /*asm volatile (
-    "push %%rbp\n"
-    "mov %%rsp, %%rbp\n"
-    "mov %%rdi, %%rax\n" //rdi = env
-    "mov %%rbx, (%%rax)\n"
-    "mov %%rcx, 8(%%rax)\n"
-    "mov %%rdx, 16(%%rax)\n"
-    "mov %%rsi, 24(%%rax)\n"
-    "mov (%%rbp), %%rdi\n"
-    "mov %%rdi, 32(%%rax)\n"
-    "mov (%%rsp), %%rdi\n"
-    "mov %%rdi, 40(%%rax)\n"
-    "mov 8(%%rbp), %%rdi\n"
-    "mov %%rdi, 48(%%rax)\n"
-    "pop %%rbp\n"
-    "ret\n"
-    :
-    :
-    :"rax", "rbp"
-  );*/
   asm volatile(
     "push %%rbp\n"
     "mov %%rsp, %%rbp\n"
@@ -89,7 +69,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "pop %%rbp\n"
     "ret\n"
     :
-    :
+    : "D" env
     : "rax"
   );
   return 0;
