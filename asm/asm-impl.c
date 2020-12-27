@@ -51,7 +51,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  asm volatile (
+  /*asm volatile (
     "push %%rbp\n"
     "mov %%rsp, %%rbp\n"
     "mov %%rdi, %%rax\n" //rdi = env
@@ -70,6 +70,29 @@ int asm_setjmp(asm_jmp_buf env) {
     :
     :
     :"rax", "rbp"
+  );*/
+  asm volatile(
+      ".globl setjmp;"
+      "setjmp:;"
+      "push %%rbp;"
+      "mov %%rsp,%%rbp;"
+      "mov %%rdi,%%rax;"//x86-64用寄存器传递参数，rdi就是env
+      "mov %%rbx,(%%rax);"//env[0]=rbx;
+      "mov %%rcx,8(%%rax);"//env[1]=rcx;
+      "mov %%rdx,16(%%rax);"//env[2]=rdx;
+      "mov %%rsi,24(%%rax);"//env[3]=rsi;
+      "mov (%%rbp),%%rdi;"
+      "mov %%rdi,32(%%rax);"//env[4]=rbp;
+      "lea 16(%%rbp),%%rdi;"
+      "mov %%rdi,40(%%rax);"//env[5]=rsp;
+      "mov 8(%%rbp),%%rdi;"
+      "mov %%rdi,48(%%rax);"//env[6]=pc;
+      "xor %%rax,%%rax;"
+      "pop %%rbp;"
+      "ret;"
+      :
+      :
+      :
   );
   return 0;
 }
