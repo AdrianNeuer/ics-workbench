@@ -54,7 +54,7 @@ int asm_setjmp(asm_jmp_buf env) {
   asm volatile(
     "push %%rbp\n"
     "mov %%rsp, %%rbp\n"
-    "mov %0, %%rax\n"  //rdi = env
+    "mov %0, %%rax\n"  
     "mov %%rbx, (%%rax)\n"
     "mov %%rcx, 8(%%rax)\n"
     "mov %%rdx, 16(%%rax)\n"
@@ -77,7 +77,7 @@ int asm_setjmp(asm_jmp_buf env) {
 
 void asm_longjmp(asm_jmp_buf env, int val) {
   asm volatile(
-    "mov %0, %%rax\n" //rsi = val
+    "mov %%rsi, %%rax\n" //rsi = val
     "test %%rax, %%rax\n"
     "cmp $0, %%rax\n"
     "jne llloop\n"
@@ -90,7 +90,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "mov 40(%%rdi),%%rsp\n"
     "jmp *48(%%rdi)\n"
     :
-    : "S" (val), "D" (env)
+    : "D" (env)
     : "rax"
   );
 }
