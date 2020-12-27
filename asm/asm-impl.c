@@ -74,17 +74,17 @@ int asm_setjmp(asm_jmp_buf env) {
   asm volatile(
       "push %%rbp\n"
       "mov %%rsp, %%rbp\n"
-      "mov %%rdi, %%rax\n"//x86-64用寄存器传递参数，rdi就是env
-      "mov %%rbx, (%%rax)\n"//env[0]=rbx;
-      "mov %%rcx, 8(%%rax)\n"//env[1]=rcx;
-      "mov %%rdx, 16(%%rax)\n"//env[2]=rdx;
-      "mov %%rsi, 24(%%rax)\n"//env[3]=rsi;
-      "mov (%%rbp), %%rbx\n"
-      "mov %%rbx, 32(%%rax)\n"//env[4]=rbp;
-      "lea 16(%%rbp), %%rbx\n"
-      "mov %%rbx, 40(%%rax)\n"//env[5]=rsp;
-      "mov 8(%%rbp), %%rbx\n"
-      "mov %%rbx, 48(%%rax)\n"//env[6]=pc;
+      "mov %%rdi, %%rax\n"//rdi = env
+      "mov %%rbx, (%%rax)\n"
+      "mov %%rcx, 8(%%rax)\n"
+      "mov %%rdx, 16(%%rax)\n"
+      "mov %%rsi, 24(%%rax)\n"
+      "mov (%%rbp), %%rdi\n"
+      "mov %%rdi, 32(%%rax)\n"
+      "lea 16(%%rbp), %%rdi\n"
+      "mov %%rdi, 40(%%rax)\n"
+      "mov 8(%%rbp), %%rdi\n"
+      "mov %%rdi, 48(%%rax)\n"
       "xor %%rax, %%rax\n"
       "pop %%rbp\n"
       "ret\n"
