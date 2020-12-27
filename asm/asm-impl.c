@@ -63,6 +63,8 @@ int asm_setjmp(asm_jmp_buf env) {
     "mov %%rbx, 32(%%rax)\n"
     "mov (%%rsp), %%rbx\n"
     "mov %%rbx, 40(%%rax)\n"
+
+    
     "mov %%rip, 48(%%rax)\n"
     "pop %%rbp\n"
     "ret\n"
