@@ -37,7 +37,7 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
   asm(
     "lloop: cmp $0, %%rcx\n"
     "jge end\n"
-    "movzb %%rsi, %%eax\n"
+    "movzb (%%rsi), %%eax\n"
     "mov %%eax, %%rdi\n"
     "add $1, %%rsi\n"
     "add $1, %%rdi\n"
