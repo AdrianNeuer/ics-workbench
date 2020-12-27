@@ -61,7 +61,7 @@ int asm_setjmp(asm_jmp_buf env) {
     "mov %%rsi, 24(%%rax)\n"
     "mov (%%rbp), %%rdi\n" 
     "mov %%rdi, 32(%%rax)\n"
-    "mov 16(%%rbp), %%rdi\n"
+    "lea 16(%%rbp), %%rdi\n"
     "mov %%rdi, 40(%%rax)\n"
     "mov 8(%%rbp), %%rdi\n"
     "mov %%rdi, 48(%%rax)\n"
