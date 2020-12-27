@@ -35,15 +35,13 @@ int asm_popcnt(uint64_t x) {
 void *asm_memcpy(void *dest, const void *src, size_t n) {
 
   asm(
-    "lloop: cmp $0, %%rcx\n"
-    "jge end\n"
-    "movzb (%%rsi), %%eax\n"
+    "lloop: movzb (%%rsi), %%eax\n"
     "movl %%eax, (%%rdi)\n"
     "add $1, %%rsi\n"
     "add $1, %%rdi\n"
     "sub $1, %%rcx\n"
-    "jmp lloop\n"
-    "end:"
+    "cmp $0, %%rcx\n"
+    "jne lloop\n"
     :"=D" (dest)
     :"S" (src), "c" (n), "m" (n)
     :"cc", "eax"
