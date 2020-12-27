@@ -78,7 +78,7 @@ void asm_longjmp(asm_jmp_buf env, int val) {
     "cmp $0, %%eax\n"
     "jne llloop\n"
     "inc %%eax\n"
-    "llloop: mov (%%rdi) %%ebx\n"
+    "llloop: mov (%%rdi),%%ebx\n"
     "mov 8(%%rdi),%%rcx;\n"
     "mov 16(%%rdi),%%rdx\n"
     "mov 24(%%rdi),%%rsi\n"
