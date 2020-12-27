@@ -51,9 +51,42 @@ void *asm_memcpy(void *dest, const void *src, size_t n) {
 }
 
 int asm_setjmp(asm_jmp_buf env) {
-  return setjmp(env);
+  asm volatile (
+    "push %%rbp\n"
+    "mov %%rsp, %%rbp\n"
+    "mov %%rdi, %%rax\n" //rdi = env
+    "mov %%rbx, (%%rax)\n"
+    "mov %%rcx, 8(%%rax)\n"
+    "mov %%rdx, 16(%%rax)\n"
+    "mov %%rsi, 24(%%rax)\n"
+    "mov (%%rbp), 32(%%rax)\n"
+    "mov (%%rsp), 40(%%rax)\n"
+    "mov %%rip, 48(%%rax)\n"
+    "pop %%rbp\n"
+    "ret\n"
+    :
+    :
+    :"rax", "rbp"
+  );
+  return 0;
 }
 
 void asm_longjmp(asm_jmp_buf env, int val) {
-  longjmp(env, val);
+  asm volatile(
+    "mov %%esi, %%eax\n" //esi = val
+    "test %%eax, %%eax\n"
+    "cmp $0, %%eax\n"
+    "jne llloop\n"
+    "inc %%eax\n"
+    "llloop: mov (%%rdi) %%ebx\n"
+    "mov 8(%%rdi),%%rcx;\n"
+    "mov 16(%%rdi),%%rdx\n"
+    "mov 24(%%rdi),%%rsi\n"
+    "mov 32(%%rdi),%%rbp\n"
+    "mov 40(%%rdi),%%rsp\n"
+    "jmp *48(%%rdi)\n"
+    :
+    :
+    : "eax"
+  );
 }
