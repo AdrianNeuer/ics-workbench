@@ -6,6 +6,15 @@ void mem_write(uintptr_t block_num, const uint8_t *buf);
 
 static uint64_t cycle_cnt = 0;
 
+static struct 
+{
+  int valid_bit;
+  int dirty_bit;
+  uint8_t Block[64];
+  uint32_t tag;
+}  Cache_block;
+
+
 void cycle_increase(int n) { cycle_cnt += n; }
 
 // TODO: implement the following functions
