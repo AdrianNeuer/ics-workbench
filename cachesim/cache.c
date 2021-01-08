@@ -1,19 +1,21 @@
 #include "common.h"
 #include <inttypes.h>
+#include <time.h>
 
 void mem_read(uintptr_t block_num, uint8_t *buf);
 void mem_write(uintptr_t block_num, const uint8_t *buf);
 
 static uint64_t cycle_cnt = 0;
 
-static struct 
+typedef struct 
 {
-  int valid_bit;
-  int dirty_bit;
-  uint8_t Block[64];
+  int valid_bit;  // 1合法， 0不合法
+  int dirty_bit;  // 1修改， 0未修改
+  uint8_t Block[64];  // 64B
   uint32_t tag;
 }  Cache_block;
 
+Cache_block Cache[64][4];  // 4*64*64 = 16KB
 
 void cycle_increase(int n) { cycle_cnt += n; }
 
