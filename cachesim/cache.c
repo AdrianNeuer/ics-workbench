@@ -1,4 +1,4 @@
-/*#include "common.h"
+#include "common.h"
 #include <inttypes.h>
 
 void mem_read(uintptr_t block_num, uint8_t *buf);
@@ -89,10 +89,10 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
         mem_read(addr >> 6, Cache[group_num][i].Block);
         uint32_t *place = (void *)(Cache[group_num][i].Block) + (block_num& 0x3);
         *place = (*place & ~wmask) | (data & wmask);
+        mem_write(addr >> 6, Cache[group_num][i].Block);
         Cache[group_num][i].tag = tag;
         Cache[group_num][i].valid_bit = true;
         Cache[group_num][i].dirty_bit = false;
-        mem_write(addr >> 6, Cache[group_num][i].Block);
         break;
       }
     }
@@ -104,10 +104,10 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
       mem_read(addr >> 6, Cache[group_num][chose_place].Block);
       uint32_t *place = (void *)(Cache[group_num][chose_place].Block) + (block_num& 0x3);
       *place = (*place & ~wmask) | (data & wmask);
+      mem_write(addr >> 6, Cache[group_num][chose_place].Block);
       Cache[group_num][chose_place].tag = tag;
       Cache[group_num][chose_place].valid_bit = true;
       Cache[group_num][chose_place].dirty_bit = false;
-      mem_write(addr >> 6, Cache[group_num][chose_place].Block);
     }
   }
 }
@@ -125,8 +125,8 @@ void init_cache(int total_size_width, int associativity_width) {
 
 void display_statistic(void) {
 }
-*/
 
+/*
 #include "common.h"
 #include <inttypes.h>
 //#include <sys/time.h>
@@ -299,4 +299,4 @@ void display_statistic(void) {
   printf("cache miss write averge time:%.6lf\n",write_time*1.0/(tot_cnt-hit_cnt));
   printf("cache hit read averge time:%.6lf\n",cache_rdtime*1.0/hit_cnt);
   printf("cache hit write averge time:%.6lf\n",cache_wrtime*1.0/hit_cnt);
-}
+}*/
