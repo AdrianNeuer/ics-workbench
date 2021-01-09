@@ -130,7 +130,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
     for (int i=0;i<4;++i)
       if (Cache[grp_id][i].valid_bit==false)
       {
-        is_empty=true;hit_increase(1);
+        is_empty=true;
         //mem_uncache_write(addr,data,wmask);//先在内存中修改
         mem_read(addr>>6,Cache[grp_id][i].Block);//再从内存读入cache
         uint32_t *p = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
@@ -149,7 +149,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
         mem_write((Cache[grp_id][repl].tag<<6)|grp_id,Cache[grp_id][repl].Block);
       //mem_uncache_write(addr,data,wmask);
       mem_read(addr>>6,Cache[grp_id][repl].Block);
-      uint32_t *p = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
+      uint32_t *p = (void *)(Cache[grp_id][repl].Block) + (block_addr & ~0x3);
       *p = (*p & ~wmask) | (data & wmask);
       Cache[grp_id][repl].tag=tag;
       Cache[grp_id][repl].valid_bit=true;
