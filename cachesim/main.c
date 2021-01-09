@@ -40,6 +40,7 @@ static void trace_exec(struct trace *t, bool is_check) {
     }
   }
   else {
+    printf("%I32u\n", t->t.addr);
     uint32_t ret = cpu_read(t->t.addr, t->t.len);
     if (is_check) {
       uint32_t ret_uncache = cpu_uncache_read(t->t.addr, t->t.len);
