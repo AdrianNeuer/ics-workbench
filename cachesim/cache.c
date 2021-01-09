@@ -21,12 +21,12 @@ void cycle_increase(int n) { cycle_cnt += n; }
 // TODO: implement the following functions
 
 uint32_t cache_read(uintptr_t addr) {
-  /*bool is_hit = false;
+  bool is_hit = false;
   bool empty;
 
-  uint32_t tag = (addr >> 12) & 0xff;  //  标记 
-  uint32_t group_num = (addr >> 6) & 0x3f;  // 组号
-  uint32_t block_num = addr & 0x3f;  // 内存块内地址
+  uintptr_t tag = (addr >> 12) & 0xff;  //  标记 
+  uintptr_t group_num = (addr >> 6) & 0x3f;  // 组号
+  uintptr_t block_num = addr & 0x3f;  // 内存块内地址
 
   uint32_t *ret;
 
@@ -63,52 +63,6 @@ uint32_t cache_read(uintptr_t addr) {
       ret = (void *)(Cache[group_num][chose_place].Block) + (block_num & ~0x3);
     }
   }
-  return *ret;*/
-  uintptr_t block_addr=(addr&63),//取低6位
-            grp_id=((addr>>6)&63),//取中间6位
-            tag=(addr>>12);//取高8位
-  bool is_hit=false;
-  uint32_t *ret;
-  for (int i=0;i<4;++i)
-  if (Cache[grp_id][i].tag==tag&&Cache[grp_id][i].valid_bit==true)
-  {
-    //命中
-    is_hit=true;
-    //ret=Cache[grp_id][i].data[block_addr];
-    ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
-    break;
-    
-  }
-  if (is_hit==false)
-  { 
-    //uint8_t tmp[64];
-    //寻找是否有空行
-    bool has_empty=false;
-    for (int i=0;i<4;++i)
-      if (Cache[grp_id][i].valid_bit==false)
-      {
-        has_empty=true;
-        mem_read(addr>>6,Cache[grp_id][i].Block);
-        ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
-        Cache[grp_id][i].tag=tag;
-        Cache[grp_id][i].valid_bit=true;
-        Cache[grp_id][i].dirty_bit=false;
-        break;
-      }
-    if (has_empty==false)
-    {
-      //随机替换
-      int repl=rand()%4;
-      if (Cache[grp_id][repl].dirty_bit==true)//需要写回
-        mem_write((Cache[grp_id][repl].tag<<6)|grp_id,Cache[grp_id][repl].Block);
-      mem_read(addr>>6,Cache[grp_id][repl].Block);
-      ret = (void *)(Cache[grp_id][repl].Block) + (block_addr & ~0x3);
-      Cache[grp_id][repl].tag=tag;
-      Cache[grp_id][repl].valid_bit=true;
-      Cache[grp_id][repl].dirty_bit=false;
-    }
-  }
-
   return *ret;
 }
 
@@ -116,9 +70,9 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
   bool is_hit = false;
   bool empty;
 
-  uint32_t tag = (addr >> 12) & 0xff;  // 标记
-  uint32_t group_num = (addr >> 6) & 0x3f;  // 组号
-  uint32_t block_num = addr & 0x3f;  // 内存块内地址
+  uintptr_t tag = (addr >> 12) & 0xff;  // 标记
+  uintptr_t group_num = (addr >> 6) & 0x3f;  // 组号
+  uintptr_t block_num = addr & 0x3f;  // 内存块内地址
 
   for (int i = 0; i < 4; i++){
     if (Cache[group_num][i].tag == tag && Cache[group_num][i].valid_bit == true){
@@ -207,24 +161,18 @@ void write_it(uintptr_t grp_id,int i,uintptr_t block_addr,uint32_t data,uint32_t
 }
 
 uint32_t cache_read(uintptr_t addr) {
-  clock_gettime(CLOCK_REALTIME, &time_now[0]);  
-  //time_begin = time_now.tv_sec*1000*1000*1000 + time_now.tv_nsec;
-  //if (tot_cnt<=5)printf("CLOCK_REALTIME: %ld, %ld\n", time_now.tv_sec, time_now.tv_nsec);  
-  tot_increase(1);
   uintptr_t block_addr=(addr&63),//取低6位
             grp_id=((addr>>6)&63),//取中间6位
             tag=(addr>>12);//取高8位
   bool is_hit=false;
   uint32_t *ret;
   for (int i=0;i<4;++i)
-  if (Cache[grp_id][i].tag==tag&&Cache[grp_id][i].valid==true)
+  if (Cache[grp_id][i].tag==tag&&Cache[grp_id][i].valid_bit==true)
   {
     //命中
-    is_hit=true;hit_increase(1);
+    is_hit=true;
     //ret=Cache[grp_id][i].data[block_addr];
-    ret = (void *)(Cache[grp_id][i].data) + (block_addr & ~0x3);
-    clock_gettime(CLOCK_REALTIME, &time_now[1]);
-    cache_rdtime+=(time_now[1].tv_sec-time_now[0].tv_sec)*1000000000+(time_now[1].tv_nsec-time_now[0].tv_nsec);
+    ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
     break;
     
   }
@@ -234,35 +182,30 @@ uint32_t cache_read(uintptr_t addr) {
     //寻找是否有空行
     bool has_empty=false;
     for (int i=0;i<4;++i)
-      if (Cache[grp_id][i].valid==false)
+      if (Cache[grp_id][i].valid_bit==false)
       {
         has_empty=true;
-        mem_read(addr>>6,Cache[grp_id][i].data);
-        ret = (void *)(Cache[grp_id][i].data) + (block_addr & ~0x3);
+        mem_read(addr>>6,Cache[grp_id][i].Block);
+        ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
         Cache[grp_id][i].tag=tag;
-        Cache[grp_id][i].valid=true;
-        Cache[grp_id][i].dirty=false;
+        Cache[grp_id][i].valid_bit=true;
+        Cache[grp_id][i].dirty_bit=false;
         break;
       }
     if (has_empty==false)
     {
       //随机替换
       int repl=rand()%4;
-      if (Cache[grp_id][repl].dirty==true)//需要写回
-        mem_write((Cache[grp_id][repl].tag<<6)|grp_id,Cache[grp_id][repl].data);
-      mem_read(addr>>6,Cache[grp_id][repl].data);
-      ret = (void *)(Cache[grp_id][repl].data) + (block_addr & ~0x3);
+      if (Cache[grp_id][repl].dirty_bit==true)//需要写回
+        mem_write((Cache[grp_id][repl].tag<<6)|grp_id,Cache[grp_id][repl].Block);
+      mem_read(addr>>6,Cache[grp_id][repl].Block);
+      ret = (void *)(Cache[grp_id][repl].Block) + (block_addr & ~0x3);
       Cache[grp_id][repl].tag=tag;
-      Cache[grp_id][repl].valid=true;
-      Cache[grp_id][repl].dirty=false;
+      Cache[grp_id][repl].valid_bit=true;
+      Cache[grp_id][repl].dirty_bit=false;
     }
   }
-  
-  if (is_hit==false)
-  {
-    clock_gettime(CLOCK_REALTIME, &time_now[1]);  
-    read_time+=(time_now[1].tv_sec-time_now[0].tv_sec)*1000000000+(time_now[1].tv_nsec-time_now[0].tv_nsec);
-  }
+
   return *ret;
 }
 
