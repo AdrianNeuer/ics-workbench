@@ -80,6 +80,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
       is_hit = true;
       uint32_t *place = (void *)(Cache[group_num][i].Block) + (block_num & ~0x3);
       *place = (*place & ~wmask) | (data & wmask);
+      Cache[group_num][i].dirty_bit = true;
     }
   }
   if (is_hit == false){
