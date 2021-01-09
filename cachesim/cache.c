@@ -67,7 +67,7 @@ uint32_t cache_read(uintptr_t addr) {
 }
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
-  bool is_hit = false;
+  /*bool is_hit = false;
   bool empty;
 
   uintptr_t tag = (addr >> 12) & 0xff;  // 标记
@@ -108,6 +108,53 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
       Cache[group_num][chose_place].tag = tag;
       Cache[group_num][chose_place].valid_bit = true;
       Cache[group_num][chose_place].dirty_bit = false;
+    }
+  }*/
+  uintptr_t block_addr=(addr&63),//取低6位
+            grp_id=((addr>>6)&63),//取中间6位
+            tag=(addr>>12);
+  bool is_hit=false;
+  for (int i=0;i<4;++i)
+    if (Cache[grp_id][i].tag==tag&&Cache[grp_id][i].valid_bit==true)
+    {
+      is_hit=true;
+      uint32_t *p = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
+      *p = (*p & ~wmask) | (data & wmask);
+      Cache[grp_id][i].dirty_bit=true;//写入cache但还没写入内存
+      break;
+    }
+  if (is_hit==false)
+  {
+    //寻找空行
+    bool is_empty=false;
+    for (int i=0;i<4;++i)
+      if (Cache[grp_id][i].valid_bit==false)
+      {
+        is_empty=true;hit_increase(1);
+        //mem_uncache_write(addr,data,wmask);//先在内存中修改
+        mem_read(addr>>6,Cache[grp_id][i].Block);//再从内存读入cache
+        uint32_t *p = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
+        *p = (*p & ~wmask) | (data & wmask);//将data写入cache
+        Cache[grp_id][i].tag=tag;
+        Cache[grp_id][i].valid_bit=true;
+        Cache[grp_id][i].dirty_bit=false;
+        mem_write(addr>>6,Cache[grp_id][i].Block);//在cache中修改完成之后写回内存
+        break;
+      }
+    if (is_empty==false)
+    {
+      //随机替换
+      int repl=rand()%4;
+      if (Cache[grp_id][repl].dirty_bit==true)//需要写回
+        mem_write((Cache[grp_id][repl].tag<<6)|grp_id,Cache[grp_id][repl].Block);
+      //mem_uncache_write(addr,data,wmask);
+      mem_read(addr>>6,Cache[grp_id][repl].Block);
+      uint32_t *p = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
+      *p = (*p & ~wmask) | (data & wmask);
+      Cache[grp_id][repl].tag=tag;
+      Cache[grp_id][repl].valid_bit=true;
+      Cache[grp_id][repl].dirty_bit=false;
+      mem_write(addr>>6,Cache[grp_id][repl].Block);
     }
   }
 }
@@ -210,8 +257,6 @@ uint32_t cache_read(uintptr_t addr) {
 }
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
-  clock_gettime(CLOCK_REALTIME, &time_now[0]); 
-  tot_increase(1);
   uintptr_t block_addr=(addr&63),//取低6位
             grp_id=((addr>>6)&63),//取中间6位
             tag=(addr>>12);
@@ -257,11 +302,6 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
       Cache[grp_id][repl].dirty=false;
       mem_write(addr>>6,Cache[grp_id][repl].data);
     }
-  }
-  if (is_hit==false)
-  {
-    clock_gettime(CLOCK_REALTIME, &time_now[1]);  
-    write_time+=(time_now[1].tv_sec-time_now[0].tv_sec)*1000000000+(time_now[1].tv_nsec-time_now[0].tv_nsec);
   }
 }
 
