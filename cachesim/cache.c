@@ -56,7 +56,7 @@ uint32_t cache_read(uintptr_t addr) {
     }
   }
 
-  return 0;
+  return *ret;
 }
 
 void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
