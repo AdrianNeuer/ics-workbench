@@ -21,7 +21,7 @@ void cycle_increase(int n) { cycle_cnt += n; }
 // TODO: implement the following functions
 
 uint32_t cache_read(uintptr_t addr) {
-  bool is_hit = false;
+  /*bool is_hit = false;
   bool empty;
 
   uint32_t tag = (addr >> 12) & 0xff;  //  标记 
@@ -63,6 +63,52 @@ uint32_t cache_read(uintptr_t addr) {
       ret = (void *)(Cache[group_num][chose_place].Block) + (block_num & ~0x3);
     }
   }
+  return *ret;*/
+  uintptr_t block_addr=(addr&63),//取低6位
+            grp_id=((addr>>6)&63),//取中间6位
+            tag=(addr>>12);//取高8位
+  bool is_hit=false;
+  uint32_t *ret;
+  for (int i=0;i<4;++i)
+  if (Cache[grp_id][i].tag==tag&&Cache[grp_id][i].valid_bit==true)
+  {
+    //命中
+    is_hit=true;hit_increase(1);
+    //ret=Cache[grp_id][i].data[block_addr];
+    ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
+    break;
+    
+  }
+  if (is_hit==false)
+  { 
+    //uint8_t tmp[64];
+    //寻找是否有空行
+    bool has_empty=false;
+    for (int i=0;i<4;++i)
+      if (Cache[grp_id][i].valid_bit==false)
+      {
+        has_empty=true;
+        mem_read(addr>>6,Cache[grp_id][i].Block);
+        ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
+        Cache[grp_id][i].tag=tag;
+        Cache[grp_id][i].valid_bit=true;
+        Cache[grp_id][i].dirty_bit=false;
+        break;
+      }
+    if (has_empty==false)
+    {
+      //随机替换
+      int repl=rand()%4;
+      if (Cache[grp_id][repl].dirty_bit==true)//需要写回
+        mem_write((Cache[grp_id][repl].tag<<6)|grp_id,Cache[grp_id][repl].Block);
+      mem_read(addr>>6,Cache[grp_id][repl].Block);
+      ret = (void *)(Cache[grp_id][repl].Block) + (block_addr & ~0x3);
+      Cache[grp_id][repl].tag=tag;
+      Cache[grp_id][repl].valid_bit=true;
+      Cache[grp_id][repl].dirty_bit=false;
+    }
+  }
+
   return *ret;
 }
 
