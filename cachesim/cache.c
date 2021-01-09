@@ -24,7 +24,7 @@ uint32_t cache_read(uintptr_t addr) {
   bool is_hit = false;
   bool empty;
 
-  uintptr_t tag = (addr >> 12) ;  //  标记 
+  uintptr_t tag = (addr >> 12) & 0xff;  //  标记 
   uintptr_t group_num = (addr >> 6) & 0x3f;  // 组号
   uintptr_t block_num = addr & 0x3f;  // 内存块内地址
 
@@ -71,7 +71,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
   bool is_hit = false;
   bool empty;
 
-  uintptr_t tag = (addr >> 12) ;  // 标记
+  uintptr_t tag = (addr >> 12) & 0xff;  // 标记
   uintptr_t group_num = (addr >> 6) & 0x3f;  // 组号
   uintptr_t block_num = addr & 0x3f;  // 内存块内地址
 
