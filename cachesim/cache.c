@@ -32,7 +32,7 @@ uint32_t cache_read(uintptr_t addr) {
 
   for (int i = 0; i < 4; i++){
     if (Cache[group_num][i].tag == tag && Cache[group_num][i].valid_bit == true){
-      ret = (void *)(Cache[group_num][i].Block) + (block_num & 0x3);
+      ret = (void *)(Cache[group_num][i].Block) + (block_num & ~0x3);
       is_hit = true;
       break;
     }
@@ -47,7 +47,7 @@ uint32_t cache_read(uintptr_t addr) {
         Cache[group_num][i].tag = tag;
         Cache[group_num][i].valid_bit = true;
         Cache[group_num][i].dirty_bit = false;
-        ret = (void *)(Cache[group_num][i].Block) + (block_num & 0x3);
+        ret = (void *)(Cache[group_num][i].Block) + (block_num & ~0x3);
         break;
       }
     }
@@ -60,7 +60,7 @@ uint32_t cache_read(uintptr_t addr) {
       Cache[group_num][chose_place].tag = tag;
       Cache[group_num][chose_place].valid_bit = true;
       Cache[group_num][chose_place].dirty_bit = false;
-      ret = (void *)(Cache[group_num][chose_place].Block) + (block_num & 0x3);
+      ret = (void *)(Cache[group_num][chose_place].Block) + (block_num & ~0x3);
     }
   }
   return *ret;
@@ -77,7 +77,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
   for (int i = 0; i < 4; i++){
     if (Cache[group_num][i].tag == tag && Cache[group_num][i].valid_bit == true){
       is_hit = true;
-      uint32_t *place = (void *)(Cache[group_num][i].Block) + (block_num & 0x3);
+      uint32_t *place = (void *)(Cache[group_num][i].Block) + (block_num & ~0x3);
       *place = (*place & ~wmask) | (data & wmask);
     }
   }
@@ -87,7 +87,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
       if(Cache[group_num][i]. valid_bit == false){
         empty = true;
         mem_read(addr >> 6, Cache[group_num][i].Block);
-        uint32_t *place = (void *)(Cache[group_num][i].Block) + (block_num& 0x3);
+        uint32_t *place = (void *)(Cache[group_num][i].Block) + (block_num & ~0x3);
         *place = (*place & ~wmask) | (data & wmask);
         mem_write(addr >> 6, Cache[group_num][i].Block);
         Cache[group_num][i].tag = tag;
@@ -102,7 +102,7 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
         mem_write(Cache[group_num][chose_place].tag << 6 | group_num, Cache[group_num][chose_place].Block);
       }
       mem_read(addr >> 6, Cache[group_num][chose_place].Block);
-      uint32_t *place = (void *)(Cache[group_num][chose_place].Block) + (block_num& 0x3);
+      uint32_t *place = (void *)(Cache[group_num][chose_place].Block) + (block_num & ~0x3);
       *place = (*place & ~wmask) | (data & wmask);
       mem_write(addr >> 6, Cache[group_num][chose_place].Block);
       Cache[group_num][chose_place].tag = tag;
