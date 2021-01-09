@@ -73,7 +73,7 @@ uint32_t cache_read(uintptr_t addr) {
   if (Cache[grp_id][i].tag==tag&&Cache[grp_id][i].valid_bit==true)
   {
     //命中
-    is_hit=true;hit_increase(1);
+    is_hit=true;
     //ret=Cache[grp_id][i].data[block_addr];
     ret = (void *)(Cache[grp_id][i].Block) + (block_addr & ~0x3);
     break;
