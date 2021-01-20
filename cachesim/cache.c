@@ -6,6 +6,8 @@ void mem_write(uintptr_t block_num, const uint8_t *buf);
 
 static uint64_t cycle_cnt = 0;
 
+static uintptr_t tag, group_num, block_num; // 标记，组号，内存块内地址
+
 typedef struct 
 {
   bool valid_bit;  // true已写入， false未写入
@@ -24,9 +26,9 @@ uint32_t cache_read(uintptr_t addr) {
   bool is_hit = false;
   bool empty;
 
-  uintptr_t tag = (addr >> 12) ;  //  标记 
-  uintptr_t group_num = (addr >> 6) & 0x3f;  // 组号
-  uintptr_t block_num = addr & 0x3f;  // 内存块内地址
+  tag = (addr >> 12) ;   
+  group_num = (addr >> 6) & 0x3f; 
+  block_num = addr & 0x3f; 
 
   uint32_t *ret;
 
@@ -71,9 +73,9 @@ void cache_write(uintptr_t addr, uint32_t data, uint32_t wmask) {
   bool is_hit = false;
   bool empty;
 
-  uintptr_t tag = (addr >> 12) ;  // 标记
-  uintptr_t group_num = (addr >> 6) & 0x3f;  // 组号
-  uintptr_t block_num = addr & 0x3f;  // 内存块内地址
+  tag = (addr >> 12) ;  
+  group_num = (addr >> 6) & 0x3f;  
+  block_num = addr & 0x3f;  
 
   for (int i = 0; i < 4; i++){
     if (Cache[group_num][i].tag == tag && Cache[group_num][i].valid_bit == true){
